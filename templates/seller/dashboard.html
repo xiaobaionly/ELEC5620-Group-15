@@ -1,0 +1,47 @@
+{% extends "_base.html" %}
+{% block title %}Seller Dashboard{% endblock %}
+{% block content %}
+  <div class="flex justify-between items-center mb-4">
+    <h2 class="text-2xl font-semibold">My Products</h2>
+    <a href="/seller/products/new/" class="px-3 py-2 bg-green-600 text-white rounded">+ Add New Product</a>
+  </div>
+  <div class="overflow-x-auto bg-white rounded shadow">
+    <table class="min-w-full text-sm">
+      <thead class="bg-gray-100">
+        <tr>
+          <th class="p-3 text-left">Image</th>
+          <th class="p-3 text-left">Product Name</th>
+          <th class="p-3 text-left">Stock</th>
+          <th class="p-3 text-left">Price</th>
+          <th class="p-3 text-left">AI Description</th>
+          <th class="p-3 text-left">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+      {% for p in products %}
+        <tr class="border-t">
+          <td class="p-3">{% if p.image %}<img src="{{ p.image.url }}" class="w-16 h-16 object-cover rounded">{% endif %}</td>
+          <td class="p-3 font-medium">{{ p.name }}</td>
+          <td class="p-3">{{ p.stock }}</td>
+          <td class="p-3">${{ p.base_price }} / {{ p.unit }}</td>
+          <td class="p-3">
+            <details class="mb-1"><summary class="cursor-pointer">English</summary><pre class="whitespace-pre-wrap">{{ p.ai_description_en|default:"(Not generated)" }}</pre></details>
+            <details><summary class="cursor-pointer">Chinese</summary><pre class="whitespace-pre-wrap">{{ p.ai_description_zh|default:"(Not generated)" }}</pre></details>
+          </td>
+          <td class="p-3 space-x-2">
+              <a class="px-2 py-1 bg-gray-200 rounded" href="/seller/products/{{ p.id }}/edit/">Edit</a>
+              <a class="px-2 py-1 bg-indigo-600 text-white rounded" href="/seller/products/{{ p.id }}/gen-desc/">AI Generate Description + Suggestions</a>
+              {% if p.is_active %}
+                <a class="px-2 py-1 bg-red-500 text-white rounded" href="/seller/products/{{ p.id }}/toggle/">Deactivate</a>
+              {% else %}
+                <a class="px-2 py-1 bg-green-500 text-white rounded" href="/seller/products/{{ p.id }}/toggle/">Activate</a>
+              {% endif %}
+            </td>
+        </tr>
+      {% empty %}
+        <tr><td class="p-4 text-center text-gray-500" colspan="6">No products yet</td></tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+{% endblock %}

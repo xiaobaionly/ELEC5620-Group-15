@@ -1,0 +1,30 @@
+{% extends "_base.html" %}
+{% block title %}FarmMate - Smart Agricultural Marketplace{% endblock %}
+
+{% block content %}
+<section class="max-w-5xl mx-auto text-center py-24 px-6">
+  <!-- Main Title -->
+  <h1 class="text-5xl md:text-6xl font-extrabold text-green-700 tracking-tight mb-12">
+    Smart Agricultural Marketplace
+  </h1>
+
+  <!-- Action Buttons -->
+  <div class="flex items-center justify-center gap-8 mb-14">
+    <a href="/buy/"
+       class="px-10 py-3 rounded-full bg-green-600 text-white text-lg font-medium shadow-md hover:bg-green-700 hover:shadow-lg transition">
+      Buyer Entrance
+    </a>
+    <a href="/seller/"
+       class="px-10 py-3 rounded-full border-2 border-green-600 text-green-700 text-lg font-medium hover:bg-green-50 transition">
+      Seller Entrance
+    </a>
+  </div>
+
+  <!-- Platform Introduction -->
+  <p class="paragraph-font max-w-3xl mx-auto text-gray-700 leading-relaxed text-lg tracking-wide text-justify indent-8">
+    FarmMate is an AI-powered agricultural trading and management platform designed for both sellers and buyers.
+    It enables seamless product publishing, AI-generated bilingual product descriptions, intelligent pricing and logistics analysis,
+    and an integrated Q&amp;A assistant — providing a unified digital experience that accelerates the intelligent transformation of modern agriculture.
+  </p>
+</section>
+{% endblock %}

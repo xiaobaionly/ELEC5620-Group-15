@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+<head>
+  {% load static %}
+  <meta charset="utf-8">
+  <title>{% block title %}FarmMate{% endblock %}</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Font for paragraph -->
+  <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;500&display=swap" rel="stylesheet">
+  <style>.paragraph-font { font-family: 'Lora', serif; }</style>
+</head>
+
+<body class="bg-green-50 text-gray-800 font-sans">
+  <!-- Header -->
+  <header class="bg-white/90 backdrop-blur shadow-sm">
+    <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
+
+      <!-- Left: Logo -->
+      <a href="/" class="flex items-center gap-3 group">
+        <img src="{% static 'images/farmmate_logo.png' %}" alt="FarmMate Logo"
+             class="h-10 w-auto transition-transform group-hover:scale-105">
+        <div class="leading-tight">
+          <span class="text-xl font-bold text-green-700">FarmMate</span>
+          <span class="block text-xs text-gray-500 tracking-wide">
+            Your Smart Agricultural Marketplace
+          </span>
+        </div>
+      </a>
+
+      <!-- Right Navigation -->
+      {% with current=request.path %}
+      <nav class="flex items-center gap-3 text-sm">
+        <!-- Buyer Interface -->
+        <a href="{% url 'buyer-catalog' %}"
+           class="px-3 py-1.5 rounded-full border border-green-600 text-green-700 hover:bg-green-50 transition
+           {% if current|slice:':5' == '/buy/' %}bg-green-600 text-white border-green-600 shadow-sm{% endif %}">
+          Buyer Interface
+        </a>
+
+        <!-- Seller Interface -->
+        <a href="{% url 'seller-dashboard' %}"
+           class="px-3 py-1.5 rounded-full border border-green-600 text-green-700 hover:bg-green-50 transition
+           {% if current|slice:':8' == '/seller/' and current|slice:':16' != '/seller/profile/' %}
+             bg-green-600 text-white border-green-600 shadow-sm
+           {% endif %}">
+          Seller Interface
+        </a>
+
+        {% if user.is_authenticated %}
+          <!-- Username button: always clickable -->
+          <a href="{% url 'seller-profile' %}"
+             class="px-3 py-1.5 rounded-full border border-green-600 text-green-700 hover:bg-green-50 transition
+             {% if current|slice:':16' == '/seller/profile/' %}bg-green-600 text-white border-green-600 shadow-sm{% endif %}">
+            {{ user.username }}
+          </a>
+
+          <!-- Logout -->
+          <a href="{% url 'logout' %}"
+             class="px-3 py-1.5 rounded-full border border-gray-300 text-gray-700 hover:bg-gray-100 transition">
+            Logout
+          </a>
+
+        {% else %}
+          <!-- Login -->
+          <a href="{% url 'login' %}"
+             class="px-3 py-1.5 rounded-full border border-green-600 text-green-700 hover:bg-green-50 transition
+             {% if current|slice:':16' == '/accounts/login/' %}
+               bg-green-600 text-white border-green-600 shadow-sm
+             {% endif %}">
+            Login
+          </a>
+
+          <!-- Register -->
+          <a href="{% url 'register' %}"
+             class="px-3 py-1.5 rounded-full border border-green-600 text-green-700 hover:bg-green-50 transition
+             {% if current|slice:':19' == '/accounts/register/' %}
+               bg-green-600 text-white border-green-600 shadow-sm
+             {% endif %}">
+            Register
+          </a>
+        {% endif %}
+      </nav>
+      {% endwith %}
+    </div>
+  </header>
+
+  <!-- Main -->
+  <main class="max-w-6xl mx-auto px-4 py-8">
+    {% block content %}{% endblock %}
+  </main>
+
+  <!-- Footer -->
+  <footer class="text-center text-xs text-gray-500 py-6 border-t border-gray-200 mt-8">
+    <p>© 2025 FarmMate · Your Smart Agricultural Marketplace</p>
+  </footer>
+</body>
+</html>

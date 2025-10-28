@@ -1,0 +1,119 @@
+{% extends "_base.html" %}
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<div class="max-w-3xl mx-auto">
+  <h2 class="text-2xl font-semibold mb-4">{{ title }}</h2>
+
+  <div class="bg-white rounded-2xl shadow p-6">
+    {% if form.non_field_errors %}
+      <div class="mb-4 rounded border border-red-200 bg-red-50 text-red-700 px-3 py-2 text-sm">
+        {{ form.non_field_errors }}
+      </div>
+    {% endif %}
+
+    <form method="post" enctype="multipart/form-data" class="space-y-5" id="product-form">
+      {% csrf_token %}
+
+      <div class="grid md:grid-cols-2 gap-4">
+        <div>
+          <label class="block text-sm mb-1">Name</label>
+          {{ form.name }}
+          {% if form.name.errors %}<p class="text-red-600 text-sm mt-1">{{ form.name.errors.0 }}</p>{% endif %}
+        </div>
+        <div>
+          <label class="block text-sm mb-1">Category</label>
+          {{ form.category }}
+          {% if form.category.errors %}<p class="text-red-600 text-sm mt-1">{{ form.category.errors.0 }}</p>{% endif %}
+        </div>
+      </div>
+
+      <div class="grid md:grid-cols-3 gap-4">
+        <div>
+          <label class="block text-sm mb-1">Unit</label>
+          {{ form.unit }}
+          {% if form.unit.errors %}<p class="text-red-600 text-sm mt-1">{{ form.unit.errors.0 }}</p>{% endif %}
+        </div>
+        <div>
+          <label class="block text-sm mb-1">Stock</label>
+          {{ form.stock }}
+          {% if form.stock.errors %}<p class="text-red-600 text-sm mt-1">{{ form.stock.errors.0 }}</p>{% endif %}
+        </div>
+        <div>
+          <label class="block text-sm mb-1">Base Price</label>
+          {{ form.base_price }}
+          {% if form.base_price.errors %}<p class="text-red-600 text-sm mt-1">{{ form.base_price.errors.0 }}</p>{% endif %}
+        </div>
+      </div>
+
+      <!-- Image upload with custom English button, filename text, and clean square preview -->
+      <div>
+        <label class="block text-sm mb-2">Image</label>
+        <div class="flex items-start gap-4">
+          <!-- Custom trigger button -->
+          <label for="image-input"
+                 class="inline-flex items-center justify-center px-4 py-2 text-sm rounded-lg bg-green-600 text-white hover:bg-green-700 cursor-pointer">
+            Choose File
+          </label>
+
+          <!-- Real file input (visually hidden) -->
+          <input id="image-input" type="file" name="{{ form.image.name }}" accept="image/*" class="sr-only">
+
+          <!-- Filename -->
+          <span id="file-name" class="text-sm text-gray-600">No file chosen</span>
+
+          <!-- Preview box (fixed square, no scrollbars) -->
+          <div class="relative w-40 aspect-square rounded overflow-hidden bg-gray-50 ml-auto">
+            {% if form.instance and form.instance.image %}
+              <img id="image-preview" src="{{ form.instance.image.url }}"
+                   class="absolute inset-0 block w-full h-full object-cover" alt="preview">
+            {% else %}
+              <img id="image-preview"
+                   class="absolute inset-0 block w-full h-full object-cover hidden" alt="preview">
+              <span id="image-placeholder"
+                    class="absolute inset-0 flex items-center justify-center text-gray-400 text-xs">
+                Preview
+              </span>
+            {% endif %}
+          </div>
+        </div>
+        {% if form.image.errors %}<p class="text-red-600 text-sm mt-1">{{ form.image.errors.0 }}</p>{% endif %}
+        <p class="text-xs text-gray-500 mt-1">Recommended size ≥ 800×800, JPG/PNG format.</p>
+      </div>
+
+      <div class="flex gap-3">
+        <button class="px-5 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700" type="submit">Save</button>
+        <a href="/seller/" class="px-5 py-2 bg-gray-200 rounded-lg">Back</a>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+  // Instant image preview + filename + hide placeholder
+  (function () {
+    const input = document.getElementById('image-input');
+    const preview = document.getElementById('image-preview');
+    const placeholder = document.getElementById('image-placeholder');
+    const fileName = document.getElementById('file-name');
+
+    if (!input) return;
+
+    function showPreview(file) {
+      if (!file) return;
+      if (fileName) fileName.textContent = file.name || 'No file chosen';
+      const url = URL.createObjectURL(file);
+      preview.src = url;
+      preview.onload = () => URL.revokeObjectURL(url);
+      preview.classList.remove('hidden');
+      if (placeholder) placeholder.classList.add('hidden');
+    }
+
+    input.addEventListener('change', (e) => {
+      const file = e.target.files && e.target.files[0];
+      if (!file) return;
+      showPreview(file);
+    });
+  })();
+</script>
+{% endblock %}
