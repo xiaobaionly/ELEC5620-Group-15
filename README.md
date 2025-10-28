@@ -32,8 +32,8 @@ It provides a digital marketplace for both buyers and sellers, powered by integr
 
 ### Step 1. Clone the repository
 ```bash
-git clone <your-repo-url>
-cd 5620Project
+git clone https://github.com/xiaobaionly/ELEC5620-Group-15.git
+cd ELEC5620-Group-15
 ```
 
 ### Step 2. Create a virtual environment
