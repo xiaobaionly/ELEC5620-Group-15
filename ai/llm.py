@@ -14,7 +14,7 @@ class LLMClient:
 
     # provider defaults
     _DEFAULT_MODELS = {
-        "openai": "gpt-4.1-mini",   # Default model switched to GPT-4.1-mini
+        "openai": "gpt-4.1-mini",  # Default model switched to GPT-4.1-mini
         "deepseek": "deepseek-chat",
     }
 
@@ -25,10 +25,10 @@ class LLMClient:
 
     # initialization
     def __init__(
-        self,
-        provider: Optional[str] = None,
-        api_key: Optional[str] = None,
-        model: Optional[str] = None,
+            self,
+            provider: Optional[str] = None,
+            api_key: Optional[str] = None,
+            model: Optional[str] = None,
     ):
         # Read provider/key from environment variables
         prov = (provider or os.getenv("LLM_PROVIDER") or "").strip().lower()
@@ -50,9 +50,9 @@ class LLMClient:
         self.provider = prov
         self.api_key = key or ""
         self.model = (
-            model
-            or os.getenv("LLM_MODEL")
-            or self._DEFAULT_MODELS.get(self.provider, "")
+                model
+                or os.getenv("LLM_MODEL")
+                or self._DEFAULT_MODELS.get(self.provider, "")
         )
 
         # Initialize OpenAI-compatible client
@@ -92,29 +92,43 @@ class LLMClient:
 
     # public APIs
     def generate_product_desc(
-        self, name: str, category: str, unit: str, stock: int, lang: str = "en"
+            self, name: str, category: str, unit: str, stock: int, lang: str = "en"
     ) -> str:
         """
-        Generate a concise e-commerce product description.
-        Args:
-            name: product name
-            category: product category
-            unit: sales unit (e.g., '1kg')
-            stock: current stock quantity
-            lang: output language ("en" or "zh")
+        Generate a persuasive yet factual e-commerce product description.
+        Tone: natural, warm, and subtly persuasive.
         """
         lang_norm = (lang or "en").strip().lower()
         if lang_norm in {"zh", "cn", "zh-cn", "chinese"}:
-            lang_norm = "Chinese"
-        elif lang_norm in {"en", "english"}:
-            lang_norm = "English"
+            prompt = f"""
+                请用自然、吸引人的中文为以下农产品撰写电商商品文案：
+                - 产品名称：{name}
+                - 类别：{category}
+                - 销售单位：{unit}
+                - 库存：{stock}（总库存数量，不是单件数）
+                要求：
+                1. 用3–4句话描述。
+                2. 语气温暖、真实、有购买吸引力，但不要夸张。
+                3. 可自然提到库存数量，例如“现有{stock}{unit}现货”或“库存充足，欢迎选购”。
+                4. 不要列点或标题，只写正文。
+                """
+            max_toks = 280
+        else:
+            prompt = f"""
+                Write a short, engaging e-commerce product description for an agricultural item:
+                - Product name: {name}
+                - Category: {category}
+                - Unit of sale: {unit}
+                - Stock quantity: {stock} (total available, not per-unit)
+                Guidelines:
+                1. Use 3–4 natural sentences.
+                2. Encourage the reader to purchase while sounding trustworthy and warm.
+                3. Naturally mention stock, e.g. “Now {stock} kilograms available for order.”
+                4. Avoid headings, lists, or marketing clichés; keep it concise and genuine.
+                """
+            max_toks = 220
 
-        prompt = (
-            f"Write a concise e-commerce product description in {lang_norm} for an agricultural product.\n"
-            f"- Name: {name}\n- Category: {category}\n- Unit: {unit}\n- Stock: {stock}\n"
-            f"Tone: factual, trustworthy, and specific; avoid hype; length 60–100 words."
-        )
-        return self._chat(prompt, max_tokens=180, temperature=0.6)
+        return self._chat(prompt, max_tokens=max_toks, temperature=0.8)
 
     def answer_question(self, question: str, product_context: str) -> str:
         """
@@ -124,10 +138,11 @@ class LLMClient:
             product_context: product data context string
         """
         prompt = (
-            "You are a concise customer support assistant for an agricultural marketplace.\n"
-            "If price, stock, or logistics are asked, prefer the numbers in the context.\n"
-            f"Product context: {product_context}\n"
-            f"Question: {question}\n"
-            "Answer briefly (1–3 sentences)."
+            "You are a helpful and friendly customer assistant for an agricultural marketplace.\n"
+            "Use the provided product info to answer naturally and accurately.\n"
+            "If the question is about price, stock, or shipping, use the numbers from context.\n"
+            "Be concise (1–3 sentences) and polite.\n"
+            f"Product information: {product_context}\n"
+            f"Customer question: {question}"
         )
         return self._chat(prompt, max_tokens=200, temperature=0.5)
