@@ -44,7 +44,7 @@ def logout_get(request):
 def seller_profile(request):
     """Seller profile management page: all editable fields are allowed to be modified"""
     if not request.user.is_seller():
-        return HttpResponseForbidden("Only sellers are allowed.")
+        return render(request, "errors/forbidden.html", status=403)
 
     sp, _ = SupplierProfile.objects.get_or_create(user=request.user)
 
