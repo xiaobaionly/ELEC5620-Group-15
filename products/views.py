@@ -8,6 +8,7 @@ from .forms import ProductForm
 from ai.llm import LLMClient
 from qa.forms import QuestionForm
 from pricing.services import generate_pricing_and_logistics
+from django.utils.text import Truncator
 
 
 @login_required
@@ -95,24 +96,68 @@ def buyer_catalog(request):
 
 
 def product_detail(request, pk):
-    """Buyer product detail: inactive products are not accessible"""
-    p = get_object_or_404(Product, pk=pk)
+    """
+    Buyer product detail view.
+    Includes supplier contact info and shipping data for AI question context.
+    """
+    # Retrieve product and supplier together
+    p = get_object_or_404(Product.objects.select_related("supplier"), pk=pk)
     if not p.is_active:
-        # If you want sellers to still view inactive products, change to:
-        # if not (request.user.is_authenticated and request.user.is_seller()):
         raise Http404("Product is inactive")
 
-    ai_answer = None
-    form = QuestionForm()
-    if request.method == "POST":
-        form = QuestionForm(request.POST)
-        if form.is_valid():
-            q = form.cleaned_data["question"]
-            context = (
-                f"name={p.name}, price={p.base_price}/{p.unit}, stock={p.stock}, "
-                f"supplier={p.supplier.company_name if p.supplier_id else ''}"
-            )
-            ai = LLMClient()
-            ai_answer = ai.answer_question(q, context)
+    # Build product context for AI
+    unit = p.unit or "kg"
 
-    return render(request, "buyer/product_detail.html", {"p": p, "form": form, "ai_answer": ai_answer})
+    # Supplier information
+    sp = getattr(p, "supplier", None)
+    seller_bits = []
+    if sp:
+        if sp.company_name:
+            seller_bits.append(f"Company: {sp.company_name}")
+        if sp.contact_name:
+            seller_bits.append(f"Contact name: {sp.contact_name}")
+        if sp.email:
+            seller_bits.append(f"Email: {sp.email}")
+        if sp.phone:
+            seller_bits.append(f"Phone: {sp.phone}")
+        if sp.address:
+            seller_bits.append(f"Address: {sp.address}")
+    seller_info = "Seller info: " + ("; ".join(seller_bits) if seller_bits else "Not provided")
+
+    # Latest logistics info (if exists)
+    lg_last = p.logistics.last() if hasattr(p, "logistics") else None
+    logistics_info = ""
+    if lg_last:
+        logistics_info = (
+            f"Shipping: region {lg_last.region}, carrier {lg_last.carrier}, "
+            f"ETA approx. {lg_last.estimated_days} days, cost ${lg_last.cost_estimate}"
+        )
+
+    # Combine all context text
+    ctx_parts = [
+        f"Product: {p.name}",
+        f"Base price: {p.base_price} per {unit}",
+        f"Stock: {p.stock} {unit}",
+        f"Category: {p.category}" if p.category else "",
+        f"Description (English): {p.ai_description_en or ''}",
+        f"Description (Chinese): {p.ai_description_zh or ''}",
+        seller_info,
+        logistics_info,
+    ]
+    product_context = "\n".join([x for x in ctx_parts if x])
+    product_context = Truncator(product_context).chars(3500)
+
+    # Handle AI question
+    ai_answer = None
+    form = QuestionForm(request.POST or None)
+    if request.method == "POST" and form.is_valid():
+        q = form.cleaned_data["question"]
+        ai = LLMClient()
+        ai_answer = ai.answer_question(q, product_context)
+
+    # Render page
+    return render(
+        request,
+        "buyer/product_detail.html",
+        {"p": p, "form": form, "ai_answer": ai_answer},
+    )
