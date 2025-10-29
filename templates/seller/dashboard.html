@@ -1,47 +1,119 @@
 {% extends "_base.html" %}
 {% block title %}Seller Dashboard{% endblock %}
+
 {% block content %}
-  <div class="flex justify-between items-center mb-4">
-    <h2 class="text-2xl font-semibold">My Products</h2>
-    <a href="/seller/products/new/" class="px-3 py-2 bg-green-600 text-white rounded">+ Add New Product</a>
+<div class="flex justify-between items-center mb-4">
+  <h2 class="text-2xl font-semibold">My Products</h2>
+  <a href="/seller/products/new/" class="px-3 py-2 bg-green-600 text-white rounded hover:bg-green-700">
+    + Add New Product
+  </a>
+</div>
+
+<div class="overflow-x-auto bg-white rounded shadow">
+  <table class="min-w-full text-sm">
+    <thead class="bg-gray-100">
+      <tr>
+        <th class="p-3 text-left">Image</th>
+        <th class="p-3 text-left">Product Name</th>
+        <th class="p-3 text-left">Stock</th>
+        <th class="p-3 text-left">Price</th>
+        <th class="p-3 text-left">AI Description</th>
+        <th class="p-3 text-left">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+    {% for p in products %}
+      <tr class="border-t">
+        <td class="p-3">
+          {% if p.image %}
+            <img src="{{ p.image.url }}" class="w-16 h-16 object-cover rounded" alt="{{ p.name }}">
+          {% endif %}
+        </td>
+        <td class="p-3 font-medium">{{ p.name }}</td>
+        <td class="p-3">{{ p.stock }}</td>
+        <td class="p-3">${{ p.base_price }} / {{ p.unit }}</td>
+
+        <!-- Modal trigger -->
+        <td class="p-3">
+          <button
+            type="button"
+            class="px-2 py-1 rounded bg-indigo-600 text-white hover:bg-indigo-700"
+            data-name="{{ p.name|escape }}"
+            data-en="{{ p.ai_description_en|default:'(Not generated)'|escapejs }}"
+            data-zh="{{ p.ai_description_zh|default:'(Not generated)'|escapejs }}"
+            onclick="openDescModal(this)"
+          >
+            View Description
+          </button>
+        </td>
+
+        <!-- Action buttons -->
+        <td class="p-3 space-x-2">
+          <a class="px-2 py-1 bg-gray-200 rounded hover:bg-gray-300" href="/seller/products/{{ p.id }}/edit/">Edit</a>
+          <a class="px-2 py-1 bg-indigo-600 text-white rounded hover:bg-indigo-700" href="/seller/products/{{ p.id }}/gen-desc/">AI Generate Description + Suggestions</a>
+          {% if p.is_active %}
+            <a class="px-2 py-1 bg-red-500 text-white rounded hover:bg-red-600" href="/seller/products/{{ p.id }}/toggle/">Deactivate</a>
+          {% else %}
+            <a class="px-2 py-1 bg-green-500 text-white rounded hover:bg-green-600" href="/seller/products/{{ p.id }}/toggle/">Activate</a>
+          {% endif %}
+        </td>
+      </tr>
+    {% empty %}
+      <tr><td class="p-4 text-center text-gray-500" colspan="6">No products yet</td></tr>
+    {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<!-- Modal -->
+<div id="desc-modal" class="hidden fixed inset-0 z-50">
+  <div class="absolute inset-0 bg-black/40" onclick="closeDescModal()"></div>
+
+  <div class="relative max-w-3xl mx-auto mt-24 bg-white rounded-xl shadow-xl border border-gray-100">
+    <div class="flex items-center justify-between px-5 py-4 border-b">
+      <h3 id="desc-modal-title" class="text-lg font-semibold">AI Description</h3>
+      <button class="p-2 rounded hover:bg-gray-100" onclick="closeDescModal()" aria-label="Close">✕</button>
+    </div>
+
+    <div class="p-5 space-y-5 max-h-[70vh] overflow-y-auto">
+      <section>
+        <h4 class="font-medium text-gray-700 mb-2">English</h4>
+        <pre id="desc-en" class="whitespace-pre-wrap text-gray-800"></pre>
+      </section>
+      <section>
+        <h4 class="font-medium text-gray-700 mb-2">Chinese</h4>
+        <pre id="desc-zh" class="whitespace-pre-wrap text-gray-800"></pre>
+      </section>
+    </div>
+
+    <div class="flex justify-end gap-2 px-5 py-4 border-t">
+      <button class="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300" onclick="closeDescModal()">Close</button>
+    </div>
   </div>
-  <div class="overflow-x-auto bg-white rounded shadow">
-    <table class="min-w-full text-sm">
-      <thead class="bg-gray-100">
-        <tr>
-          <th class="p-3 text-left">Image</th>
-          <th class="p-3 text-left">Product Name</th>
-          <th class="p-3 text-left">Stock</th>
-          <th class="p-3 text-left">Price</th>
-          <th class="p-3 text-left">AI Description</th>
-          <th class="p-3 text-left">Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-      {% for p in products %}
-        <tr class="border-t">
-          <td class="p-3">{% if p.image %}<img src="{{ p.image.url }}" class="w-16 h-16 object-cover rounded">{% endif %}</td>
-          <td class="p-3 font-medium">{{ p.name }}</td>
-          <td class="p-3">{{ p.stock }}</td>
-          <td class="p-3">${{ p.base_price }} / {{ p.unit }}</td>
-          <td class="p-3">
-            <details class="mb-1"><summary class="cursor-pointer">English</summary><pre class="whitespace-pre-wrap">{{ p.ai_description_en|default:"(Not generated)" }}</pre></details>
-            <details><summary class="cursor-pointer">Chinese</summary><pre class="whitespace-pre-wrap">{{ p.ai_description_zh|default:"(Not generated)" }}</pre></details>
-          </td>
-          <td class="p-3 space-x-2">
-              <a class="px-2 py-1 bg-gray-200 rounded" href="/seller/products/{{ p.id }}/edit/">Edit</a>
-              <a class="px-2 py-1 bg-indigo-600 text-white rounded" href="/seller/products/{{ p.id }}/gen-desc/">AI Generate Description + Suggestions</a>
-              {% if p.is_active %}
-                <a class="px-2 py-1 bg-red-500 text-white rounded" href="/seller/products/{{ p.id }}/toggle/">Deactivate</a>
-              {% else %}
-                <a class="px-2 py-1 bg-green-500 text-white rounded" href="/seller/products/{{ p.id }}/toggle/">Activate</a>
-              {% endif %}
-            </td>
-        </tr>
-      {% empty %}
-        <tr><td class="p-4 text-center text-gray-500" colspan="6">No products yet</td></tr>
-      {% endfor %}
-      </tbody>
-    </table>
-  </div>
+</div>
+
+<!-- JavaScript -->
+<script>
+  function openDescModal(btn) {
+    const name = btn.dataset.name || 'AI Description';
+    const en = btn.dataset.en || '(Not generated)';
+    const zh = btn.dataset.zh || '(Not generated)';
+
+    document.getElementById('desc-modal-title').textContent = name + ' — AI Description';
+    document.getElementById('desc-en').textContent = en;
+    document.getElementById('desc-zh').textContent = zh;
+
+    document.getElementById('desc-modal').classList.remove('hidden');
+    document.body.classList.add('overflow-hidden');
+  }
+
+  function closeDescModal() {
+    document.getElementById('desc-modal').classList.add('hidden');
+    document.body.classList.remove('overflow-hidden');
+  }
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeDescModal();
+  });
+</script>
 {% endblock %}
