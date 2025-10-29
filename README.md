@@ -84,3 +84,8 @@ http://127.0.0.1:8000/
 
 Developed as part of the ENGG5620 Project  
 by Group15 – integrating Django, Tailwind, and LLM APIs for smart agricultural trade.
+
+---
+
+## Jira
+https://yifeilihope2001.atlassian.net/jira/software/projects/EL/boards/36?atlOrigin=eyJpIjoiNWQ4Y2ExM2RiY2FlNGRiYmJhMzdlMzc0MjAwMTU3MTQiLCJwIjoiaiJ9
