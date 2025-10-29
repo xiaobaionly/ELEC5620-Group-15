@@ -1,0 +1,16 @@
+{% extends "_base.html" %}
+{% block title %}Access Denied{% endblock %}
+{% block content %}
+<div class="flex flex-col items-center justify-center min-h-[70vh] text-center">
+  <div class="text-red-600 mb-4">
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M12 5c-3.866 0-7 3.134-7 7 0 1.657.61 3.17 1.61 4.354L12 21l5.39-4.646A6.978 6.978 0 0019 12c0-3.866-3.134-7-7-7z" />
+    </svg>
+  </div>
+  <h1 class="text-3xl font-bold text-gray-800 mb-3">Access Denied</h1>
+  <p class="text-gray-600 text-lg mb-6">Only sellers are allowed to access this page.</p>
+  <a href="/" class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition">
+    Go Back Home
+  </a>
+</div>
+{% endblock %}

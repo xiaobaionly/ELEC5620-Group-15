@@ -14,7 +14,7 @@ from pricing.services import generate_pricing_and_logistics
 def product_toggle_active(request, pk):
     """Activate/Deactivate toggle (seller only)"""
     if not request.user.is_seller():
-        return HttpResponseForbidden("Only sellers allowed.")
+        return render(request, "errors/forbidden.html", status=403)
     sp, _ = SupplierProfile.objects.get_or_create(user=request.user)
     product = get_object_or_404(Product, pk=pk, supplier=sp)
     product.is_active = not product.is_active
@@ -30,7 +30,7 @@ def home(request):
 def seller_dashboard(request):
     """Seller's own product list"""
     if not request.user.is_seller():
-        return HttpResponseForbidden("Only sellers allowed.")
+        return render(request, "errors/forbidden.html", status=403)
     sp, _ = SupplierProfile.objects.get_or_create(user=request.user)
     products = Product.objects.filter(supplier=sp).order_by("-created_at")
     return render(request, "seller/dashboard.html", {"products": products})
@@ -40,7 +40,7 @@ def seller_dashboard(request):
 def product_create(request):
     """Create a new product (seller only)"""
     if not request.user.is_seller():
-        return HttpResponseForbidden("Only sellers allowed.")
+        return render(request, "errors/forbidden.html", status=403)
     sp, _ = SupplierProfile.objects.get_or_create(user=request.user)
     if request.method == "POST":
         form = ProductForm(request.POST, request.FILES)
@@ -58,7 +58,7 @@ def product_create(request):
 def product_edit(request, pk):
     """Edit an existing product (seller only)"""
     if not request.user.is_seller():
-        return HttpResponseForbidden("Only sellers allowed.")
+        return render(request, "errors/forbidden.html", status=403)
     sp, _ = SupplierProfile.objects.get_or_create(user=request.user)
     p = get_object_or_404(Product, pk=pk, supplier=sp)
     if request.method == "POST":
@@ -75,7 +75,7 @@ def product_edit(request, pk):
 def generate_desc(request, pk):
     """One-click generation of English/Chinese descriptions + pricing and logistics suggestions"""
     if not request.user.is_seller():
-        return HttpResponseForbidden("Only sellers allowed.")
+        return render(request, "errors/forbidden.html", status=403)
     sp, _ = SupplierProfile.objects.get_or_create(user=request.user)
     p = get_object_or_404(Product, pk=pk, supplier=sp)
 
