@@ -39,8 +39,8 @@
             type="button"
             class="px-2 py-1 rounded bg-indigo-600 text-white hover:bg-indigo-700"
             data-name="{{ p.name|escape }}"
-            data-en="{{ p.ai_description_en|default:'(Not generated)'|escapejs }}"
-            data-zh="{{ p.ai_description_zh|default:'(Not generated)'|escapejs }}"
+            data-en="{{ p.ai_description_en|default:'(Not generated)'|escape }}"
+            data-zh="{{ p.ai_description_zh|default:'(Not generated)'|escape }}"
             onclick="openDescModal(this)"
           >
             View Description
