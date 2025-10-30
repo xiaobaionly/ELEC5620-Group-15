@@ -7,7 +7,7 @@ from django.conf.urls.static import static
 from products.views import (
     home, seller_dashboard, buyer_catalog,
     product_detail, product_create, product_edit, generate_desc,
-    product_toggle_active
+    product_toggle_active, product_delete
 )
 from accounts.views import register, role_route, logout_get, seller_profile  # Key import
 
@@ -31,6 +31,7 @@ urlpatterns = [
     path('seller/products/new/', product_create, name='product-create'),
     path('seller/products/<int:pk>/edit/', product_edit, name='product-edit'),
     path('seller/products/<int:pk>/gen-desc/', generate_desc, name='product-gen-desc'),
+    path('seller/products/<int:pk>/delete/', product_delete, name='product-delete'),
 
     # Buyer section
     path('buy/', buyer_catalog, name='buyer-catalog'),

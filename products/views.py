@@ -161,3 +161,16 @@ def product_detail(request, pk):
         "buyer/product_detail.html",
         {"p": p, "form": form, "ai_answer": ai_answer},
     )
+
+
+@login_required
+def product_delete(request, pk):
+   
+    if not request.user.is_seller():
+        return render(request, "errors/forbidden.html", status=403)
+    sp, _ = SupplierProfile.objects.get_or_create(user=request.user)
+    p = get_object_or_404(Product, pk=pk, supplier=sp)
+    if request.method == "POST":
+        p.delete()
+        return redirect("seller-dashboard")
+    return render(request, "seller/confirm_delete.html", {"product": p})
