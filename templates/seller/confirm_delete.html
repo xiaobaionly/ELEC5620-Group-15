@@ -1,0 +1,22 @@
+{% extends "_base.html" %}
+{% block title %}删除产品{% endblock %}
+{% block content %}
+<div class="max-w-lg mx-auto mt-12 bg-white p-8 rounded-xl shadow">
+  <h2 class="text-xl font-semibold mb-4">确定要删除该产品吗？</h2>
+  <div class="mb-6 flex items-center gap-4">
+    {% if product.image %}
+      <img src="{{ product.image.url }}" alt="{{ product.name }}" class="w-20 h-20 rounded object-cover">
+    {% endif %}
+    <div>
+      <div class="font-bold text-lg">{{ product.name }}</div>
+      <div class="text-gray-600">价格: ${{ product.base_price }} / {{ product.unit }}</div>
+      <div class="text-gray-500 text-sm">库存: {{ product.stock }}</div>
+    </div>
+  </div>
+  <form method="post">
+    {% csrf_token %}
+    <button type="submit" class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700">确认删除</button>
+    <a href="/seller/" class="px-4 py-2 ml-2 bg-gray-200 rounded hover:bg-gray-300">取消</a>
+  </form>
+</div>
+{% endblock %}
