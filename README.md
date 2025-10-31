@@ -39,7 +39,7 @@ cd ELEC5620-Group-15
 ### Step 2. Create a virtual environment
 ```bash
 python -m venv .venv
-source .venv/Scripts/activate   # Windows PowerShell
+.venv\Scripts\Activate.ps1   # Windows
 # or
 source .venv/bin/activate       # macOS / Linux
 ```
