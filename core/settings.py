@@ -94,3 +94,25 @@ MEDIA_ROOT = BASE_DIR / 'media'
 LOGIN_URL = '/accounts/login/'
 LOGIN_REDIRECT_URL = '/accounts/route/'
 LOGOUT_REDIRECT_URL = '/'
+
+
+# Admin Customization (Safe Way)
+# These lines must run after Django apps are ready.
+# Therefore, we wrap them inside a function connected to AppConfig.ready()
+
+from django.apps import apps
+from django.contrib import admin
+
+def customize_admin_titles():
+    """Customize Django admin site titles safely after app registry is ready."""
+    admin.site.site_header = "AgriMate Administration"
+    admin.site.site_title = "AgriMate Admin Portal"
+    admin.site.index_title = "Welcome to AgriMate Control Panel"
+
+# If apps are already loaded (e.g. during manage.py runserver), apply immediately
+try:
+    if apps.ready:
+        customize_admin_titles()
+except Exception:
+    # Avoid interfering with initial app loading
+    pass
