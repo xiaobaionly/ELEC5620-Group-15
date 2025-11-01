@@ -16,6 +16,17 @@ It provides a digital marketplace for both buyers and sellers, powered by integr
 
 ---
 
+## Deployment System Overview
+
+The backend is containerized using **Docker** with a single `web` service (Django + SQLite).  
+When executed, Docker automatically:
+1. Builds the image from the provided `Dockerfile`.
+2. Applies database migrations.
+3. Starts the Django development server inside the container.
+4. Exposes port **8000** to the host machine (`http://localhost:8000`).
+
+---
+
 ## Tech Stack
 
 | Category | Technology |
@@ -28,7 +39,7 @@ It provides a digital marketplace for both buyers and sellers, powered by integr
 
 ---
 
-## Environment Setup
+## Run Locally (without Docker)
 
 ### Step 1. Clone the repository
 ```bash
@@ -75,8 +86,50 @@ Then start the local development server:
 python manage.py runserver
 ```
 
-Access your app at:  
-http://127.0.0.1:8000/
+After the server starts, open the following URLs in your browser:  
+Main site: http://127.0.0.1:8000  
+Admin site: http://127.0.0.1:8000/admin
+
+---
+
+## Run with Docker 
+
+This setup runs only the **Django backend** inside Docker using **SQLite**.
+
+### Step 1. Clone the repository
+```bash
+git clone https://github.com/xiaobaionly/ELEC5620-Group-15.git
+cd ELEC5620-Group-15
+```
+
+### Step 2. Configure your `.env` file
+
+The `.env` file is already included in the project.  
+You only need to **insert your own OpenAI API key** in the correct place.
+
+```env
+# AI Provider Settings
+LLM_PROVIDER=openai
+LLM_MODEL=gpt-4.1-mini
+LLM_API_KEY=your-openai-api-key
+```
+
+> **Note:** Replace `your-openai-api-key` with your actual OpenAI API key before running the project.
+
+
+### Step 3. Build the image
+```bash
+docker compose build
+```
+
+### Step 4. Start the container
+```bash
+docker compose up
+```
+
+After the server starts, open the following URLs in your browser:  
+Main site: http://localhost:8000
+Admin site: http://localhost:8000/admin
 
 ---
 

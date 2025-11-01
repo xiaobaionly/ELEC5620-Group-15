@@ -1,15 +1,15 @@
 from django.contrib import admin
 from .models import Product
 
-# Do NOT register SupplierProfile here anymore – it is exposed via the proxy in Accounts.
 
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
     """
     Admin for Product.
-    Adds 'owner' column showing the auth user behind the supplier.
+    Hides the 'Supplier' column, keeps 'User' (owner) for clarity.
     """
+
     list_display = (
         "id",
         "name",
@@ -17,13 +17,12 @@ class ProductAdmin(admin.ModelAdmin):
         "unit",
         "stock",
         "base_price",
-        "supplier",
-        "owner",      # user who owns the supplier
+        "owner",       # user who owns the supplier
         "is_active",
         "created_at",
     )
 
-    # Search also by supplier's user (creator/owner)
+    # Allow searching by product info or supplier-related fields
     search_fields = (
         "id",
         "name",
@@ -34,11 +33,11 @@ class ProductAdmin(admin.ModelAdmin):
         "supplier__user__email",
     )
 
-    # Filter by category/active and by owner user
+    # Filters for category, active status, and supplier's user
     list_filter = ("category", "is_active", ("supplier__user", admin.RelatedOnlyFieldListFilter))
 
-    # Speed up joins in changelist
-    list_select_related = ("supplier", "supplier__user")
+    # Optimize queries (only load supplier->user, no need to prefetch supplier itself)
+    list_select_related = ("supplier__user",)
 
     ordering = ("-created_at",)
     readonly_fields = ("created_at",)

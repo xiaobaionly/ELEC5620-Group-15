@@ -1,0 +1,14 @@
+# Ignore VCS and Python cache
+.git
+__pycache__/
+*.pyc
+
+# Ignore local virtualenvs and node modules
+.venv/
+node_modules/
+
+# Keep secrets and local artifacts out of images
+.env
+db.sqlite3
+staticfiles/
+media/
