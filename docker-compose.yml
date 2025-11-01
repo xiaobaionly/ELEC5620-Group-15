@@ -1,0 +1,15 @@
+version: '3.9'
+
+services:
+  web:
+    build: .
+    container_name: agrimate-web
+    ports:
+      - "8000:8000"        # host:container
+    env_file:
+      - .env               # inject environment variables at runtime
+    volumes:
+      - .:/app             # live code + keep db.sqlite3 on host
+    command: >             # migrate on start, then run dev server
+      sh -c "python manage.py migrate &&
+             python manage.py runserver 0.0.0.0:8000"
