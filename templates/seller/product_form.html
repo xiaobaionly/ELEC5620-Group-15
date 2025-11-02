@@ -81,6 +81,14 @@
         <p class="text-xs text-gray-500 mt-1">Recommended size ≥ 800×800, JPG/PNG format.</p>
       </div>
 
+      <!-- Purchase Link -->
+      <div>
+        <label class="block text-sm mb-1">Purchase Link</label>
+        {{ form.purchase_link }}
+        {% if form.purchase_link.errors %}<p class="text-red-600 text-sm mt-1">{{ form.purchase_link.errors.0 }}</p>{% endif %}
+        <p class="text-xs text-gray-500 mt-1">Optional: External link where customers can purchase this product.</p>
+      </div>
+
       <div class="flex gap-3">
         <button class="px-5 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700" type="submit">Save</button>
         <a href="/seller/" class="px-5 py-2 bg-gray-200 rounded-lg">Back</a>

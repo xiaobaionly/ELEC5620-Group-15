@@ -43,6 +43,7 @@ class Product(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     image = models.ImageField(upload_to="products/", blank=True, null=True)
     is_active = models.BooleanField(default=True, verbose_name="Active (listed)")
+    purchase_link = models.URLField(blank=True, null=True, verbose_name="Purchase Link")
 
     class Meta:
         verbose_name = "Product"

@@ -27,6 +27,13 @@
         Available: <strong>{{ p.stock }}</strong> {{ p.unit|default:"kg" }}
       </p>
 
+      <!-- Purchase Link Button -->
+      {% if p.purchase_link %}
+        <a href="{{ p.purchase_link }}" target="_blank" rel="noopener noreferrer" class="inline-block px-5 py-2 mb-4 bg-green-600 text-white font-medium rounded-lg hover:bg-green-700 transition">
+          Buy on external website
+        </a>
+      {% endif %}
+
       <h3 class="font-semibold mt-4">Description (Chinese)</h3>
       <p class="text-left leading-relaxed">
         {{ p.ai_description_zh|default:"Not generated yet" }}

@@ -6,7 +6,7 @@ from .models import Product, SupplierProfile
 class ProductForm(forms.ModelForm):
     class Meta:
         model = Product
-        fields = ['name', 'category', 'unit', 'stock', 'base_price', 'image']
+        fields = ['name', 'category', 'unit', 'stock', 'base_price', 'image', 'purchase_link']
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -16,6 +16,7 @@ class ProductForm(forms.ModelForm):
             'unit': 'kg / box / bag',
             'stock': 'Stock quantity',
             'base_price': 'Base price (excluding shipping)',
+            'purchase_link': 'https://example.com/product',
         }
         for name, field in self.fields.items():
             if hasattr(field.widget, 'attrs'):
