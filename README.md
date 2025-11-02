@@ -142,7 +142,7 @@ sudo docker compose up
 ```
 
 After the server starts, open the following URLs in your browser:  
-Main site: http://localhost:8000
+Main site: http://localhost:8000     
 Admin site: http://localhost:8000/admin
 
 ---
