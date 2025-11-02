@@ -99,6 +99,12 @@ To access the admin dashboard, use the following login:
 
 Once logged in, you can manage users, products from the Django admin interface.
 
+> **Note:**  
+> This account is for **demo purposes only**.  
+> Please change the password or create a new superuser for production environments:
+> ```bash
+> python manage.py createsuperuser
+
 ---
 
 ## Run with Docker 
@@ -165,7 +171,7 @@ Once logged in, you can manage users, products from the Django admin interface.
 > This account is for **demo purposes only**.  
 > Please change the password or create a new superuser for production environments:
 > ```bash
-> python manage.py createsuperuser
+> docker compose exec web python manage.py createsuperuser
 
 ---
 
