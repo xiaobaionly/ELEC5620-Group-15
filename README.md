@@ -125,10 +125,8 @@ docker compose build
 
 macOS / Linux:
 ```bash
-sudo docker compose build
+docker compose build
 ```
-
-> `sudo` is only needed if your Docker requires root privileges
 
 ### Step 4. Start the container
 Windows PowerShell:
@@ -138,7 +136,7 @@ docker compose up
 
 macOS / Linux:
 ```bash
-sudo docker compose up
+docker compose up
 ```
 
 After the server starts, open the following URLs in your browser:  
