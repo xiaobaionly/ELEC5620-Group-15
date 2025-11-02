@@ -90,6 +90,14 @@ After the server starts, open the following URLs in your browser:
 Main site: http://127.0.0.1:8000  
 Admin site: http://127.0.0.1:8000/admin
 
+#### Default Admin Credentials
+
+To access the admin dashboard, use the following login:
+
+| Username | Password |
+|-----------|-----------|
+| `admin` | `admin` |
+
 ---
 
 ## Run with Docker 
@@ -142,6 +150,14 @@ docker compose up
 After the server starts, open the following URLs in your browser:  
 Main site: http://localhost:8000     
 Admin site: http://localhost:8000/admin
+
+#### Default Admin Credentials
+
+To access the admin dashboard, use the following login:
+
+| Username | Password |
+|-----------|-----------|
+| `admin` | `admin` |
 
 ---
 
