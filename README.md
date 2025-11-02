@@ -93,10 +93,10 @@ Admin site: http://127.0.0.1:8000/admin
 #### Default Admin Credentials
 
 To access the admin dashboard, use the following login:
-
 | Username | Password |
 |-----------|-----------|
 | `admin` | `admin` |
+Once logged in, you can manage users, products from the Django admin interface.
 
 ---
 
@@ -154,10 +154,10 @@ Admin site: http://localhost:8000/admin
 #### Default Admin Credentials
 
 To access the admin dashboard, use the following login:
-
 | Username | Password |
 |-----------|-----------|
 | `admin` | `admin` |
+Once logged in, you can manage users, products from the Django admin interface.
 
 ---
 
