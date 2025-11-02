@@ -143,16 +143,19 @@ macOS / Linux:
 docker compose build
 ```
 
-### Step 4. Start the container
+### Step 4. Start the container (run in background)
 Windows PowerShell:
 ```bash
-docker compose up
+docker compose up -d
 ```
 
 macOS / Linux:
 ```bash
-docker compose up
+docker compose up -d
 ```
+
+> The `-d` flag runs the container in detached (background) mode.  
+> You can check it with `docker ps`.
 
 After the server starts, open the following URLs in your browser:  
 Main site: http://localhost:8000     
@@ -172,6 +175,17 @@ Once logged in, you can manage users, products from the Django admin interface.
 > Please change the password or create a new superuser for production environments:
 > ```bash
 > docker compose exec web python manage.py createsuperuser
+
+### Step 5. Stop the container
+**Windows:**
+```bash
+docker compose down
+```
+
+**macOS / Linux:**
+```bash
+docker compose down
+```
 
 ---
 
